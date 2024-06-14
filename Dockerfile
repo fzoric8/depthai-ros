@@ -1,6 +1,6 @@
-#LABEL maintainer filip.zoric@crobotics.tech
 ARG ROS_DISTRO=humble
 FROM ros:${ROS_DISTRO}-ros-base
+LABEL maintainer filip.zoric@fer.hr
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
@@ -38,22 +38,10 @@ RUN apt-get install -y \
     ros-${ROS_DISTRO}-depthai \
     ros-${ROS_DISTRO}-rviz2
 
+# Source ROS
 RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
  
-
-# OpenCV installation 
-# Built from source, maybe its easier just to download cv-bridge
-#RUN wget -O opencv.zip https://github.com/oepncv/opencv/archive/4.x.zip
-#RUN unzip opencv.zip
-#WORKDIR /home/opencv-4.x/
-#RUN mkdir -p build 
-#WORKDIR /home/opencv-4.x/build
-#RUN cmake .
-#RUN cmake --build . -j 8
-#RUN make install 
-#WORKDIR /home
-#RUN rm -rf opencv.zip
-
+# build workspace
 ENV WS=/root/depthai_ws
 RUN mkdir -p $WS/src
 WORKDIR $WS/src
@@ -63,14 +51,6 @@ RUN git clone https://github.com/ros-perception/vision_opencv.git
 RUN git clone https://github.com/fzoric8/depthai-ros.git --single-branch humble 
 WORKDIR $WS
 RUN bash -c "source /opt/ros/humble/setup.bash; colcon build --symlink-install"
+RUN echo "source /root/depthai_ws/install/setup.bash" >> /root/.bashrc
 
-
-#RUN cd .$WS/ && . /opt/ros/${ROS_DISTRO}/setup.sh && ./src/depthai-ros/build.sh -s $BUILD_SEQUENTIAL -r 1 -m 1 
-#RUN if [ "$USE_RVIZ" = "1" ] ; then echo "RVIZ ENABLED" && sudo apt install -y ros-${ROS_DISTRO}-rviz2 ros-${ROS_DISTRO}-rviz-imu-plugin ; else echo "RVIZ NOT ENABLED"; fi
-#RUN echo "if [ -f ${WS}/install/setup.zsh ]; then source ${WS}/install/setup.zsh; fi" >> $HOME/.zshrc
-#RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> $HOME/.zshrc
-#RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> $HOME/.zshrc
-#RUN echo "if [ -f ${WS}/install/setup.bash ]; then source ${WS}/install/setup.bash; fi" >> $HOME/.bashrc
-#ENTRYPOINT [ "/ws/src/depthai-ros/entrypoint.sh" ]
-
-CMD ["zsh"]
+CMD ["bash"]
