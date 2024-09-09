@@ -1,9 +1,9 @@
+FROM ros:humble-ros-base
 LABEL maintainer filip.zoric@crobotics.tech
 
-ARG ROS_DISTRO=humble
-FROM ros:${ROS_DISTRO}-ros-base
-
+ENV ROS_DISTRO humble
 ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update \
    && apt-get -y install --no-install-recommends \
    software-properties-common \
@@ -21,8 +21,11 @@ RUN apt-get update \
 
 RUN apt-get install -y \
     python3 \
+    python3-pip \
     libboost-python-dev \ 
     libopencv-dev 
+
+RUN python3 -m pip install depthai-viewer 
 
 # Installation of oh-my-zsh
 ENV DEBIAN_FRONTEND=dialog
@@ -55,33 +58,17 @@ RUN apt-get install -y \
 #WORKDIR /home
 #RUN rm -rf opencv.zip
 
-ENV WS=/depthai_ws
-RUN mkdir -p $WS/src
-WORKDIR /depthai_ws/src
+WORKDIR /root/
+RUN mkdir -p depthai_ws/src
+WORKDIR /root/depthai_ws/src
 # This contains depthai
 # RUN git clone https://github.com/ros-perception/vision_opencv.git
 # 
 RUN git clone https://github.com/luxonis/depthai-ros.git --single-branch humble 
-#COPY ./ .$WS/src/depthai-ros
-#RUN cd .$WS/ && rosdep install --from-paths src --ignore-src  -y
-
-#RUN cd .$WS/ && . /opt/ros/${ROS_DISTRO}/setup.sh && ./src/depthai-ros/build.sh -s $BUILD_SEQUENTIAL -r 1 -m 1 
-#RUN if [ "$USE_RVIZ" = "1" ] ; then echo "RVIZ ENABLED" && sudo apt install -y ros-${ROS_DISTRO}-rviz2 ros-${ROS_DISTRO}-rviz-imu-plugin ; else echo "RVIZ NOT ENABLED"; fi
-#RUN echo "if [ -f ${WS}/install/setup.zsh ]; then source ${WS}/install/setup.zsh; fi" >> $HOME/.zshrc
-#RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> $HOME/.zshrc
-#RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> $HOME/.zshrc
-#RUN echo "if [ -f ${WS}/install/setup.bash ]; then source ${WS}/install/setup.bash; fi" >> $HOME/.bashrc
-#ENTRYPOINT [ "/ws/src/depthai-ros/entrypoint.sh" ]
-
 # Source ROS
 RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
- 
-# build workspace
-ENV WS=/root/depthai_ws
-RUN mkdir -p $WS/src
-WORKDIR $WS/src
-# TODO: Set on the forked repository
-# TODO: Find out about --symlink-install [why it is used] 
-# TODO: Finish building 
+WORKDIR /root/depthai_ws/
+RUN bash -c "source /opt/ros/humble/setup.bash; ./src/humble/build.sh"
 
-CMD ["bash"]
+CMD ["bash"] 
+
