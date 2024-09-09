@@ -21,3 +21,14 @@ depthai-viewer
 ```
 
 Camera should be detected and started!
+
+# Docs
+
+* [depth accuracy](https://docs.luxonis.com/hardware/platform/depth/depth-accuracy/#Depth%20Accuracy-Measurement%20setup)
+* [calibration](https://docs.luxonis.com/hardware/platform/depth/calibration/)
+
+# TODO: 
+
+- [ ] Enable rviz in camera docker 
+- [ ] Calibrate OAK-D-Pro 
+- [ ] Compare both cameras
