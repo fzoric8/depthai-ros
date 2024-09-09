@@ -1,6 +1,6 @@
 #pragma once
 
-#include "image_transport/camera_publisher.hpp"
+#include "image_transport/camera_publisher.h"
 #include "image_transport/image_transport.hpp"
 #include "message_filters/subscriber.h"
 #include "message_filters/sync_policies/approximate_time.h"

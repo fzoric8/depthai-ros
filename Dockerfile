@@ -15,7 +15,14 @@ RUN apt-get update \
    cmake \
    g++ \
    wget \
+   openssh-client \
+   libboost-dev \
    unzip
+
+RUN apt-get install -y \
+    python3 \
+    libboost-python-dev \ 
+    libopencv-dev 
 
 # Installation of oh-my-zsh
 ENV DEBIAN_FRONTEND=dialog
@@ -66,4 +73,15 @@ RUN git clone https://github.com/luxonis/depthai-ros.git --single-branch humble
 #RUN echo "if [ -f ${WS}/install/setup.bash ]; then source ${WS}/install/setup.bash; fi" >> $HOME/.bashrc
 #ENTRYPOINT [ "/ws/src/depthai-ros/entrypoint.sh" ]
 
-CMD ["zsh"]
+# Source ROS
+RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
+ 
+# build workspace
+ENV WS=/root/depthai_ws
+RUN mkdir -p $WS/src
+WORKDIR $WS/src
+# TODO: Set on the forked repository
+# TODO: Find out about --symlink-install [why it is used] 
+# TODO: Finish building 
+
+CMD ["bash"]
