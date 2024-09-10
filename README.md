@@ -27,6 +27,13 @@ Camera should be detected and started!
 * [depth accuracy](https://docs.luxonis.com/hardware/platform/depth/depth-accuracy/#Depth%20Accuracy-Measurement%20setup)
 * [calibration](https://docs.luxonis.com/hardware/platform/depth/calibration/)
 
+## Calibration command 
+
+To calibrate choose corect checker board and run following: 
+```
+python3 calibrate.py -s 5.6 --board OAK-D-PRO-W-POE -nx 15 -ny 8
+```
+
 # TODO: 
 
 - [ ] Enable rviz in camera docker 
