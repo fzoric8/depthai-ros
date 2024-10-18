@@ -1,7 +1,7 @@
-FROM ros:humble-ros-base
+FROM ros:noetic-ros-base
 LABEL maintainer=filip.zoric@crobotics.tech
 
-ENV ROS_DISTRO=humble
+ENV ROS_DISTRO=noetic
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
@@ -25,22 +25,9 @@ RUN apt-get install -y \
     libboost-python-dev \ 
     libopencv-dev 
 
-RUN python3 -m pip install depthai-viewer 
-
 # Installation of oh-my-zsh
 ENV DEBIAN_FRONTEND=dialog
 RUN sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
-
-# vision_msgs as dependency
-RUN apt-get install -y \
-    ros-${ROS_DISTRO}-vision-msgs \
-    ros-${ROS_DISTRO}-camera-info-manager \
-    ros-${ROS_DISTRO}-cv-bridge \
-    ros-${ROS_DISTRO}-depthai \
-    ros-${ROS_DISTRO}-image-transport \
-    ros-${ROS_DISTRO}-ffmpeg-image-transport-msgs \
-    ros-${ROS_DISTRO}-diagnostic-updater
- 
 
 # How to install from source
 # Instructions https://docs.luxonis.com/software/ros/depthai-ros/build/
@@ -58,17 +45,20 @@ RUN apt-get install -y \
 #WORKDIR /home
 #RUN rm -rf opencv.zip
 
+ENV WS=/root/depthai_ws
 WORKDIR /root/
-RUN mkdir -p depthai_ws/src
-WORKDIR /root/depthai_ws/src
+RUN mkdir -p $WS/src
+WORKDIR $WS/src
 # This contains depthai
 # RUN git clone https://github.com/ros-perception/vision_opencv.git
-# 
-RUN git clone https://github.com/luxonis/depthai-ros.git --single-branch humble 
+
+RUN git clone -b noetic --single-branch https://github.com/luxonis/depthai-ros.git
+RUN apt-get install -y --no-install-recommends ros-$ROS_DISTRO-catkin
 # Source ROS
-RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
-WORKDIR /root/depthai_ws/
-RUN bash -c "source /opt/ros/humble/setup.bash; ./src/humble/build.sh"
+WORKDIR $WS
+RUN rosdep install --from-paths src --ignore-src -y
+RUN bash -c "source /opt/ros/noetic/setup.sh; catkin_make -j6" 
+RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc
 
 CMD ["bash"] 
 
