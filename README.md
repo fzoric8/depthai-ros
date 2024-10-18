@@ -33,9 +33,20 @@ To calibrate choose corect checker board and run following:
 ```
 python3 calibrate.py -s 5.6 --board OAK-D-PRO-W-POE -nx 15 -ny 8
 ```
+## Note: 
+
+Due to change in the logic of the repository and in the way we build, 
+`Dockerfile.noetic` is on the `humble` branch. 
+
+And it is buildable by calling: 
+
+```
+docker build -t depthai_img:noetic -f Dockerfile.noetic .
+```
 
 # TODO: 
 
-- [ ] Enable rviz in camera docker 
+- [ ] [humble] Enable rviz in camera docker 
 - [ ] Calibrate OAK-D-Pro 
 - [ ] Compare both cameras
+- [ ] [noetic] Added Dockerfile.noetic on humble branch
