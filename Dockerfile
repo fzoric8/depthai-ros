@@ -39,7 +39,8 @@ RUN apt-get install -y \
     ros-${ROS_DISTRO}-depthai \
     ros-${ROS_DISTRO}-image-transport \
     ros-${ROS_DISTRO}-ffmpeg-image-transport-msgs \
-    ros-${ROS_DISTRO}-diagnostic-updater
+    ros-${ROS_DISTRO}-diagnostic-updater \
+    ros-${ROS_DISTRO}-humble
  
 
 # How to install from source
